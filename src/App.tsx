@@ -1,29 +1,81 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 function App() {
-  type BoxContent = {
+  type BoxItem = {
+    id: number;
     name: string;
-    contents: string[];
   };
 
-  const [boxContent, setBoxContent] = useState<null | BoxContent>(null);
+  const [boxContents, setBoxContents] = useState<BoxItem[]>([
+    { id: 0, name: "test" },
+  ]);
+
+  const handleAddContent = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    const newId = boxContents[boxContents.length - 1].id + 1;
+    setBoxContents([...boxContents, { id: newId, name: "" }]);
+  };
+
+  const handleContentInput = (
+    boxItem: BoxItem,
+    e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
+  ) => {
+    setBoxContents((prevContents) => {
+      return prevContents.map((content) => {
+        return content.id === boxItem.id
+          ? { id: boxItem.id, name: e.target.value }
+          : content;
+      });
+    });
+  };
+
+  const handleRemoveContent = (boxItem: BoxItem) => {
+    return setBoxContents((prevContents) => {
+      return prevContents.reduce((acc, curr) => {
+        if (curr.id !== boxItem.id) {
+          acc.push(curr);
+        }
+        return acc;
+      }, [] as BoxItem[]);
+    });
+  };
+
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    console.log(boxContents);
+  };
 
   return (
     <div id="container">
       <h1>Box Demo</h1>
       <form>
         <div className="form-row">
-          <label>Name</label>
-          <input type="text" placeholder="Box name"></input>
+          <label>
+            Name
+            <input type="text" placeholder="Box name"></input>
+          </label>
         </div>
-        <div className="form-row">
-          <label>Content</label>
-          <input type="text" placeholder="Box Content"></input>
-        </div>
+        {boxContents.map((boxItem) => {
+          return (
+            <div key={boxItem.id} className="form-row">
+              <label>
+                Content
+                <input
+                  type="text"
+                  value={boxItem.name}
+                  onChange={(e) => handleContentInput(boxItem, e)}
+                />
+              </label>
+              <button onClick={() => handleRemoveContent(boxItem)}>X</button>
+            </div>
+          );
+        })}
         <div id="form-buttons">
-          <button>Submit</button>
-          <button>Add content</button>
+          <button onClick={(e) => handleSubmit(e)}>Submit</button>
+          <button onClick={(e) => handleAddContent(e)}>Add content</button>
         </div>
       </form>
     </div>
