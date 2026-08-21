@@ -1,13 +1,18 @@
+import { createFileRoute } from "@tanstack/react-router";
 import React, { useState } from "react";
-import "./App.css";
+import { BoxItem } from "../components/BoxItem";
 
-function App() {
-  type BoxItem = {
-    id: number;
-    name: string;
-  };
+export const Route = createFileRoute("/box")({
+  component: Box,
+});
 
-  const [boxContents, setBoxContents] = useState<BoxItem[]>([
+export type BoxItemType = {
+  id: number;
+  name: string;
+};
+
+function Box() {
+  const [boxContents, setBoxContents] = useState<BoxItemType[]>([
     { id: 0, name: "test" },
   ]);
 
@@ -20,7 +25,7 @@ function App() {
   };
 
   const handleContentInput = (
-    boxItem: BoxItem,
+    boxItem: BoxItemType,
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
   ) => {
     setBoxContents((prevContents) => {
@@ -32,14 +37,14 @@ function App() {
     });
   };
 
-  const handleRemoveContent = (boxItem: BoxItem) => {
+  const handleRemoveContent = (boxItem: BoxItemType) => {
     return setBoxContents((prevContents) => {
       return prevContents.reduce((acc, curr) => {
         if (curr.id !== boxItem.id) {
           acc.push(curr);
         }
         return acc;
-      }, [] as BoxItem[]);
+      }, [] as BoxItemType[]);
     });
   };
 
@@ -58,19 +63,18 @@ function App() {
             <input type="text" placeholder="Box name"></input>
           </label>
         </div>
+        <img
+          className="box-image"
+          src="https://plus.unsplash.com/premium_photo-1667030474693-6d0632f97029?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2F0fGVufDB8fDB8fHww"
+        />
         {boxContents.map((boxItem) => {
           return (
-            <div key={boxItem.id} className="form-row">
-              <label>
-                Content
-                <input
-                  type="text"
-                  value={boxItem.name}
-                  onChange={(e) => handleContentInput(boxItem, e)}
-                />
-              </label>
-              <button onClick={() => handleRemoveContent(boxItem)}>X</button>
-            </div>
+            <BoxItem
+              item={boxItem}
+              handleContentInput={handleContentInput}
+              handleRemoveContent={handleRemoveContent}
+              key={boxItem.id}
+            />
           );
         })}
         <div id="form-buttons">
@@ -81,5 +85,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

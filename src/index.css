@@ -89,8 +89,7 @@ form {
 .form-row {
   width: 75%;
   display: flex;
-  margin-left: -50%;
-  justify-content: end;
+  justify-content: center;
   margin-top: 2rem;
 }
 
@@ -139,4 +138,14 @@ p {
 label {
   display: flex;
   gap: 15px;
+}
+
+.delete-item {
+  position: relative;
+  left: 10px;
+}
+
+.box-image {
+  height: 400px;
+  margin-top: 2rem;
 }
